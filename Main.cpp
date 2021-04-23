@@ -41,21 +41,29 @@ Vector4d quatproduct(const Vector4d& q, const Vector4d& m) {
 
 template<class T>
 T eqf0(T t, T y[8]) {
+	double q_norm = sqrt(y[0] * y[0] + y[1] * y[1] + y[2] * y[2] + y[3] * y[3]);
+	for (int i = 0; i < 4; i++) y[i] = y[i] / q_norm;
     return 0.5 * (-y[1] * y[4] - y[2] * y[5] - y[3] * y[6]);
 }
 
 template<class T>
 T eqf1(T t, T y[8]) {
+	double q_norm = sqrt(y[0] * y[0] + y[1] * y[1] + y[2] * y[2] + y[3] * y[3]);
+	for (int i = 0; i < 4; i++) y[i] = y[i] / q_norm;
     return 0.5 * (y[0] * y[5] + y[2] * y[6] - y[3] * y[5]);
 }
 
 template<class T>
 T eqf2(T t, T y[8]) {
+	double q_norm = sqrt(y[0] * y[0] + y[1] * y[1] + y[2] * y[2] + y[3] * y[3]);
+	for (int i = 0; i < 4; i++) y[i] = y[i] / q_norm;
     return 0.5 * (y[0] * y[5] - y[1] * y[6] + y[3] * y[4]);
 }
 
 template<class T>
 T eqf3(T t, T y[8]) {
+	double q_norm = sqrt(y[0] * y[0] + y[1] * y[1] + y[2] * y[2] + y[3] * y[3]);
+	for (int i = 0; i < 4; i++) y[i] = y[i] / q_norm;
     return 0.5 * (y[0] * y[6] + y[1] * y[5] - y[2] * y[4]);
 }
 
@@ -91,17 +99,17 @@ int main(int argc, char* argv[]) {
     RKF.f[6] = &eqf6<double>;
     RKF.f[7] = &eqf7<double>;
 
-    //Задание НУ:
+    //Initial conditions
 	double sigma_0, ro_0, psi_0, fi_0, tetta_0;
 	sigma_0 = 12 * deg2rad;
 	ro_0 = 50 * deg2rad;
 	psi_0 = 75 * deg2rad;
 	tetta_0 = 30 * deg2rad;
-	fi_0 = 20 * deg2rad; // если tetta_0 = PI*k, то fi_0 = 0 
+	fi_0 = 20 * deg2rad; // if tetta_0 = PI*k, then fi_0 = 0 
 	double mod_omega_0 = w0 * 20; //module of omega_0
 	double nu_0 = 0; //initial value of true anomaly
 
-	//Поиск omega_0 по известным углам и ее модулю
+	//omega_0 
 	Eigen::Matrix3d itm_B_inv;
 	itm_B_inv(0, 0) = 1 / itm_A; itm_B_inv(1, 1) = 1 / itm_B; itm_B_inv(2, 2) = 1 / itm_C;  // inertia tensor
 	itm_B_inv(0, 1) = itm_B_inv(0, 2) = itm_B_inv(1, 0) = itm_B_inv(1, 2) = itm_B_inv(2, 0) = itm_B_inv(2, 1) = 0;
@@ -123,10 +131,12 @@ int main(int argc, char* argv[]) {
 	q_7 = quatproduct(q_5, q_6);
 	q_8 = { cos(fi_0 / 2), 0, 0, sin(fi_0 / 2) };
 	q_0 = quatproduct(q_7, q_8); // initial quaternion value
+	double q0_norm = sqrt(q_0[0] * q_0[0] + q_0[1] * q_0[1] + q_0[2] * q_0[2] + q_0[3] * q_0[3]);
+	for (int i = 0; i < 4; i++) q_0[i] = q_0[i] / q0_norm;
 
-    double rkf[8] = { q_0[0], q_0[1], q_0[2], q_0[3], omega_0[0], omega_0[1], omega_0[2], nu_0}; //начальные условия
+    double rkf[8] = { q_0[0], q_0[1], q_0[2], q_0[3], omega_0[0], omega_0[1], omega_0[2], nu_0}; //final vector of initial conditions
     try {
-        RKF.solve(1, 1e-3, rkf, 1e-9, 0.0, 18000, datafile);
+        RKF.solve(1, 1e-3, rkf, 1e-9, 0.0, 1800, datafile);
     }
     catch (invalid_argument& e) {
         cerr << e.what() << endl;
