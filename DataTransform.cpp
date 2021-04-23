@@ -46,16 +46,16 @@ int main()
 	itm_B(0, 0) = 250; itm_B(1, 1) = 250; itm_B(2, 2) = 100;  // inertia tensor
 	itm_B(0, 1) = itm_B(0, 2) = itm_B(1, 0) = itm_B(1, 2) = itm_B(2, 0) = itm_B(2, 1) = 0;
 
-	SetConsoleCP(1251);//меняем кодировку консоли принудительно
-	SetConsoleOutputCP(1251);//меняем кодировку консоли принудительно на вывод				 
-	ifstream file("asteroid.dat");//Создаем файловый поток и связываем его с файлом
-	if (file.is_open())//Если открытие файла прошло успешно
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);				 
+	ifstream file("asteroid.dat");
+	if (file.is_open())
 	{
-		//cout << "Файл открыт." << endl;
-		string line;//Строчка текста
+		
+		string line;
 		while (getline(file, line))
 		{
-			//cout << line << endl;//Можно посмотреть, что в строчке считалось
+			
 			double t, h, x0, x1, x2, x3, x4, x5, x6, x7;
 			istringstream iss(line);
 			iss >> t >> h >> x0 >> x1 >> x2 >> x3 >> x4 >> x5 >> x6 >> x7;
