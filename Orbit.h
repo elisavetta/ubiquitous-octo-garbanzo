@@ -51,8 +51,8 @@ public:
 		double cos_u = cos(u);
 		double sin_u = sin(u);
 
-		//double Omega = Omega0 + Omega_p * t;
-        double Omega = Omega0;
+		double Omega = Omega0 + Omega_p * t;
+        	//double Omega = Omega0;
 		double cos_Omega = cos(Omega);
 		double sin_Omega = sin(Omega);
 
